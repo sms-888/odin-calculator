@@ -51,6 +51,15 @@ function Calculator() {
 
     };
     
+    // reset calculator method
+    this.reset = function () {
+        this.screen = "";
+        this.display = "0"; 
+        this.firstNum = "";
+        this.secondNum = "";
+        this.operator = "";
+        this.state = "START";
+    }
 
     // operation methods
     this.add = function () { return +this.firstNum + +this.secondNum };
@@ -81,9 +90,15 @@ function Calculator() {
     // fsm is the finite state machine which controls the calculator
     this.fsm = function (btnType, value) {
         // define button type pressed
-        const NUMBTN = "NUMBTN", OPTBTN = "OPTBTN", EQBTN = "EQBTN";
+        const NUMBTN = "NUMBTN", OPTBTN = "OPTBTN", EQBTN = "EQBTN", ACBTN = "ACBTN";
         const DECIMALPT = "."; // value is '.'
-        console.log("Enter FSM: ",this.state, this.display, btnType, value);
+        
+        // perform calculator reset calculator if AC button pressed
+        if (btnType === ACBTN) {
+            this.reset();
+            return;
+        }
+
         // perform actions depending on state
         switch (this.state) {
             // beginning state
@@ -206,13 +221,11 @@ function Calculator() {
 
 // event callback function for button press
 function btnPressed(e) {
-    const BTNS = {'num':'NUMBTN', 'op':'OPTBTN', 'eq':'EQBTN'};
+    const BTNS = {'num':'NUMBTN', 'op':'OPTBTN', 'eq':'EQBTN', 'ac':'ACBTN'};
     const btnType = BTNS[e.target.getAttribute('class')];
     const value = e.target.textContent;
-    console.log(btnType, value);
     calculator.fsm(btnType, value);
     display.textContent = calculator.setScreen();
-    console.log(calculator.setScreen());
 }
 
 // create new calculator instance
